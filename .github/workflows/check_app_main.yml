@@ -2,16 +2,12 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+ 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,30 +18,26 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2.1.5
-        with:
-          version: 12
-      
-
-      # Runs a set of commands using the runners shell
-      - name: GitHub Action for Yarn
-        uses: Borales/actions-yarn@v2.3.0
-        with:
-         cmd: install
-         
-         
-      - name: creating build for deployment
-        run : npm build
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2-beta
+      with:
+        version: 12
         
-      - name: installing surge
-        run : npm install --global surge
+    - name: GitHub Action for Yarn
+      uses: Borales/actions-yarn@v2.3.0
+      with:
+          # Yarn command
+        cmd: install
       
+    - name: Build
+      run: npm build
       
-      - name: deploying on surge
-        run : sudo npx surge  ./build https://weblearning.surge.sh/ --token ${{secrets.CHECK_TOKENS}}
+    - name: Surge
+      run: npm install -g surge    
+      
+    - name: deploying on surge
+      run : sudo npx surge ./build http://testing-deploy.surge.sh/ --token ${{secrets.DEPLOYING_TOKEN}}
        
