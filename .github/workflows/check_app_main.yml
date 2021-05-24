@@ -47,5 +47,5 @@ jobs:
       
       
       - name: deploying on surge
-        run : sudo npx surge  ./build https://weblearning.surge.sh/ --token ${{secrets.check_tokens}}
+        run : sudo npx surge  ./build https://weblearning.surge.sh/ --token ${{secrets.CHECK_TOKENS}}
        
